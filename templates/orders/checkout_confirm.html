@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .confirm-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fffaf0;
+        padding: 30px;
+        border: 2px solid #ffd166;
+        border-radius: 15px;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .confirm-container h2 {
+        text-align: center;
+        color: #bc8b10ff;
+        font-size: 2rem;
+        margin-bottom: 25px;
+    }
+
+    .confirm-container h3 {
+        color: #d6b306ff;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+
+    .confirm-container p {
+        margin: 5px 0;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .confirm-container ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .confirm-container li {
+        background: #fdfdfd;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-left: 5px solid #d6a906ff;
+        border-radius: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .confirm-container .total {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #000000ff;
+        margin-bottom: 25px;
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .confirm-container form {
+        text-align: center;
+    }
+
+    .confirm-container button {
+        background: #d6a206ff;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .confirm-container button:hover {
+        background: #b29711ff;
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="confirm-container">
+    <h2>Confirmar compra</h2>
+
+    <h3>Datos de envío:</h3>
+    <p>{{ data.nombre }} {{ data.apellido }}</p>
+    <p>{{ data.dirección }}, {{ data.ciudad }}</p>
+    <p>Tel: {{ data.telefono }}</p>
+    <p>Método de pago: {{ data.metodo_pago }}</p>
+
+    <h3>Productos:</h3>
+    <ul>
+        {% for it in items %}
+        <li>{{ it.product.name }} x {{ it.quantity }} = ${{ it.subtotal | floatformat:0|cut:","}}</li>
+        {% endfor %}
+    </ul>
+
+    <p class="total">Total: ${{ total | floatformat:0|cut:","}}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar pedido</button>
+    </form>
+</div>
+
+{% endblock %}

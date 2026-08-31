@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3">Historial de pedidos</h2>
+
+    {% if orders %}
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                    <th>Método de pago</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>{{ order.status|title }}</td>
+                    <td>${{ order.total_amount|floatformat:0|cut:"," }}</td>
+                    <td>{{ order.metodo_pago }}</td>
+                    <td>
+                        <a href="{% url 'order_success' order.id %}" class="btn btn-sm btn-outline-primary">
+                            Ver detalle
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">No se encontraron pedidos registrados.</div>
+    {% endif %}
+</div>
+{% endblock %}

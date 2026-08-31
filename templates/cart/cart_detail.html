@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .btn-nav {
+    background-color: #fbf0c2ff;
+    border-radius: 100px;
+    box-shadow: rgba(187, 173, 44, 0.2) 0 -25px 18px -14px inset,rgba(187, 175, 44, 0.15) 0 1px 2px,rgba(187, 187, 44, 0.15) 0 2px 4px,rgba(187, 185, 44, 0.15) 0 4px 8px,rgba(187, 149, 44, 0.15) 0 8px 16px,rgba(187, 163, 44, 0.15) 0 16px 32px;
+    color: black;
+    cursor: pointer;
+    display: inline-block;
+    font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    }
+
+    .btn-nav:hover {
+    box-shadow: rgba(187, 180, 44, 0.35) 0 -25px 18px -14px inset,rgba(182, 187, 44, 0.25) 0 1px 2px,rgba(187, 168, 44, 0.25) 0 2px 4px,rgba(187, 185, 44, 0.25) 0 4px 8px,rgba(187, 161, 44, 0.25) 0 8px 16px,rgba(187, 173, 44, 0.25) 0 16px 32px;
+    transform: scale(1.05) rotate(-1deg);
+    }
+</style>
+
+<div class="cart-container" style="max-width:900px; margin:0 auto; padding:30px; background:#fffaf0; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+<h2 style="text-align:center; color:#ff6f61; margin-bottom:30px;">Tu Carrito de Compras</h2>
+{% if messages %}
+    <div style="margin-bottom:20px;">
+        {% for message in messages %}
+        <div style="background:#d4edda; color:#155724; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #c3e6cb;">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if items %}
+<table class="cart-table" style="width:100%; border-collapse:collapse; margin-bottom:30px;">
+    <thead>
+    <tr style="background:#ffd166; color:#333;">
+        <th style="padding:10px;">Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px;">{{ item.product.name }}</td>
+        <td>${{ item.product.price|floatformat:0|cut:"," }}</td>
+        <td>
+        <form method="post" action="{% url 'cart_update' item.id %}" style="display:flex; gap:5px;">
+            {% csrf_token %}
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width:60px; padding:5px; border-radius:5px; border:1px solid #ccc;">
+            <button type="submit" style="background:#06d6a0; color:white; border:none; padding:5px 10px; border-radius:5px;">Actualizar</button>
+        </form>
+        </td>
+        <td>${{ item.subtotal|floatformat:2 }}</td>
+        <td>
+        <form method="post" action="{% url 'cart_remove' item.id %}">
+            {% csrf_token %}
+            <button type="submit" class="remove-btn" style="background:#ef476f; color:white; border:none; padding:5px 10px; border-radius:5px;">Eliminar</button>
+        </form>
+        </td>
+    </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+    <div class="cart-summary" style="text-align:right; font-size:1.1em; margin-bottom:30px;">
+    <p><strong>Subtotal:</strong> ${{ subtotal|floatformat:0|cut:"," }}</p>
+    <p><strong>IVA (19%):</strong> ${{ iva|floatformat:0|cut:"," }}</p>
+    <p><strong>Envío:</strong> ${{ shipping|floatformat:0|cut:"," }}</p>
+    <p style="font-size:1.3em; font-weight:bold; color:#4caf50;"><strong>Total:</strong> ${{ total|floatformat:0|cut:"," }}</p>
+    </div>
+
+    <div class="cart-actions" style="text-align:center;">
+    <a href="{% url 'product_list' %}" class="btn-nav">Seguir explorando</a>
+    <form method="post" action="{% url 'cart_clear' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-nav">Vaciar carrito</button>
+    </form>
+    <a href="{% url 'checkout' %}" class="btn-nav">Proceder al pago</a>
+    </div>
+
+{% else %}
+    <p style="text-align:center; font-size:1.2em; color:#999;">Tu carrito está vacío 🐶🐱</p>
+    <div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'product_list' %}" class="btn" style="background:#ff6f61; color:white; padding:10px 20px; border-radius:20px; text-decoration:none;">Explorar productos</a>
+    </div>
+{% endif %}
+</div>
+{% endblock %}

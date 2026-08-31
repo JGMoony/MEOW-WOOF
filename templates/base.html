@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>🐾 MEOW & WOOF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'OV Treasure', serif;
+            background: #fdfdfd;
+            color: #333;
+        }
+        header {
+            background: #f9c13dff;
+            padding: 0.2rem 2rem;
+        } 
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            text-align: left;
+            font-family: 'OV Treasure', serif;
+        }
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-title h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-family: 'OV Treasure', serif;
+            color: #171717ff;
+        }
+        .logo-img {
+            height: 90px;
+            width: auto;
+            border-radius: 8px;
+        }
+        .logo-img:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+                    .logo-link {
+            text-decoration: none;
+            display: inline-block;
+            }
+
+            .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            }
+
+            .logo-title h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-family: 'OV Treasure', serif;
+            color: #171717ff;
+            }
+
+            .logo-img {
+            height: 50%%;
+            width: auto;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            }
+
+            .logo-link:hover .logo-img {
+            transform: scale(1.05);
+            }
+
+            .logo-link:hover h1 {
+            color: #7a5b11ff;
+            }
+        nav {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0.5rem 0;
+        }
+        nav a {
+            color: #171717ff;
+            font-family: "OV Treasure", serif;
+            text-decoration: none;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        nav a:hover {
+            color: #7a5b11ff;
+        }
+        .autentication {
+            margin-left: 50rem;
+        }
+        .container {
+            padding: 2rem;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .cta-button:hover {
+            background-color: #cea137ff;
+        }
+        .messages {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .messages.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .messages.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        footer {
+            background: #f9c13dff;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+        }
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            padding: 20px;
+            background: #fff8e1;
+        }
+
+        .carousel-item img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'product_list' %}" class="logo-link">
+        <div class="logo-title">
+            <img src="{% static 'img/logo.png' %}" alt="Logo MEOW & WOOF" class="logo-img">
+            <h1>MEOW & WOOF</h1>
+        </div>
+        </a>
+        <nav>
+            <a href="{% url 'product_list' %}">Catálogo</a>
+            {% if user.is_staff %}
+            <a href="{% url 'dashboard' %}" style="font-weight:bold;">
+                Dashboard
+            </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+            {% if not user.is_staff %}
+            <a href="{% url 'cart_detail' %}">
+                <img src="{% static 'img/carrito-de-compras.png' %}" alt="Carrito de compras" width="20" height="20">
+            </a>
+            {% endif %}
+            <a class="autentication" href="{% url 'profile_view' %}">{{ user.username }}</a>
+            <a href="{% url 'logout' %}"> 
+                <img src="{% static 'img/apagar.png' %}" alt="cerrar sesión" width="20" height="20">
+            </a>
+            {% else %}
+                <a href="{% url 'login' %}">Iniciar sesión</a>
+                <a href="{% url 'register' %}">Registrarse</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="messages {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 MEOW & WOOF - Tienda de Mascotas</p>
+    </footer>
+</body>
+</html>
+<script>
+let currentIndex = 0;
+
+function moveCarousel(direction) {
+    const carousel = document.querySelector(".carousel");
+    const items = document.querySelectorAll(".carousel-item");
+    const totalItems = items.length;
+
+    currentIndex = (currentIndex + direction + totalItems) % totalItems;
+    carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+setInterval(() => moveCarousel(1), 5000);
+</script>

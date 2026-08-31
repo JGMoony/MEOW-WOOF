@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .review-form {
+        background: #fdfdfd;
+        padding: 20px;
+        border-radius: 12px;
+        border: 2px solid #ffd166;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+        max-width: 700px;
+        margin: 0 auto;
+        margin-top: 30px;
+    }
+
+    .review-form h3 {
+        color: #06d6a0;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .rating-stars {
+        margin-bottom: 20px;
+    }
+
+    .stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+    }
+
+    .stars input[type="radio"] {
+        display: none;
+    }
+
+    .stars label {
+        font-size: 2rem;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .stars input:checked ~ label,
+    .stars label:hover,
+    .stars label:hover ~ label {
+        color: #ffd166;
+    }
+
+    textarea[name="comment"] {
+        width: 90%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 1rem;
+        resize: vertical;
+        background: #fffaf0;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .enviar-comment {
+        border: 0 solid;
+        background-color: rgba(78, 176, 246, 0.87);
+        box-shadow: inset 0 0 20px rgba(255, 255, 255, 0);
+        outline: 1px solid rgba(255, 255, 255, 0);
+        outline-offset: 0px;
+        text-shadow: none;
+        transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+        border-radius: 20px;
+        padding: 10px 20px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .enviar-comment:hover {
+        border: 1px solid;
+        box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+        outline-offset: 15px;
+        text-shadow: 1px 1px 2px #427388;
+    }
+
+    .cancel-link {
+        display: inline-block;
+        margin-top: 10px;
+        text-align: center;
+        background: #ef476f;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .form-errors {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+    </style>
+
+    <div class="review-form">
+    <h3>Editar reseña</h3>
+
+    {% if form.errors %}
+        <div class="form-errors">
+        <strong>Corrige los siguientes errores:</strong>
+        <ul>
+            {% for field in form %}
+            {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="rating-stars">
+        <label>Calificación:</label>
+        <div class="stars">
+            {% for i in "54321" %}
+            <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" {% if form.rating.value|stringformat:"s" == i %}checked{% endif %}>
+            <label for="star{{ i }}">★</label>
+            {% endfor %}
+        </div>
+        </div>
+
+        <label for="comment">Comentario:</label>
+        <textarea name="comment" id="comment" rows="4" placeholder="Escribe tu opinión...">{{ form.comment.value }}</textarea>
+
+        <div style="text-align:center; margin-top:20px;">
+        <button class="enviar-comment" type="submit">Guardar cambios</button>
+        <a href="{% url 'product_detail' pk=review.product.id %}" class="cancel-link">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

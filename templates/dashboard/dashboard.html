@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block content %}
+{% load pluck %}
+
+<h2 class="dashboard-title">Dashboard de administración</h2>
+
+<div class="kpi-container">
+  <div class="kpi-card">
+    <h4>Órdenes nuevas</h4>
+    <p>{{ new_orders }}</p>
+  </div>
+  <div class="kpi-card">
+    <h4>Total de ingresos</h4>
+    <p>${{ total_income }}</p>
+  </div>
+  <div class="kpi-card">
+    <h4>Usuarios registrados</h4>
+    <p>{{ total_users }}</p>
+  </div>
+</div>
+
+<div class="filter-buttons">
+  <button onclick="loadDashboardData('weekly')">Semanal</button>
+  <button onclick="loadDashboardData('monthly')">Mensual</button>
+</div>
+
+<div class="dashboard-container">
+  <div class="chart-card">
+    <h3>Productos más vendidos</h3>
+    <canvas id="salesChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3>Productos mejor calificados</h3>
+    <canvas id="ratingChart"></canvas>
+  </div>
+
+  <div class="chart-card">
+    <h3>Ingresos por categoría</h3>
+    <canvas id="incomeChart"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  let salesChart, ratingChart, incomeChart;
+
+  function renderCharts(data) {
+    if (!data || !data.top_sold || !data.top_rated || !data.income_by_category) {
+      console.error("Datos incompletos:", data);
+      return;
+    }
+
+    const salesCanvas = document.getElementById("salesChart");
+    const ratingCanvas = document.getElementById("ratingChart");
+    const incomeCanvas = document.getElementById("incomeChart");
+
+    if (!salesCanvas || !ratingCanvas || !incomeCanvas) {
+      console.error("Canvas no encontrado");
+      return;
+    }
+
+    if (salesChart) salesChart.destroy();
+    if (ratingChart) ratingChart.destroy();
+    if (incomeChart) incomeChart.destroy();
+
+    salesChart = new Chart(salesCanvas, {
+      type: "doughnut",
+      data: {
+        labels: data.top_sold.map(p => p["product__name"]),
+        datasets: [{
+          data: data.top_sold.map(p => p.total),
+          backgroundColor: ["#06d6a0", "#ffd166", "#ef476f", "#118ab2", "#8338ec"]
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    ratingChart = new Chart(ratingCanvas, {
+      type: "doughnut",
+      data: {
+        labels: data.top_rated.map(p => p.name),
+        datasets: [{
+          data: data.top_rated.map(p => p.avg_rating),
+          backgroundColor: ["#ffbe0b", "#fb5607", "#ff006e", "#3a86ff", "#8338ec"]
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    incomeChart = new Chart(incomeCanvas, {
+      type: "doughnut",
+      data: {
+        labels: data.income_by_category.map(c => c.category),
+        datasets: [{
+          data: data.income_by_category.map(c => c.total),
+          backgroundColor: ["#06d6a0", "#ef476f", "#ffd166", "#118ab2", "#073b4c"]
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
+
+  function loadDashboardData(range) {
+    fetch(`/dashboard/data/?range=${range}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log("Datos recibidos:", data);
+        renderCharts(data);
+      })
+      .catch(err => console.error("Error al cargar datos:", err));
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadDashboardData("weekly");
+  });
+</script>
+
+<style>
+  body {
+    font-family: "OV Treasure", serif;
+    background-color: #fffaf0;
+    color: #333;
+  }
+
+  .dashboard-title {
+    text-align: center;
+    color: #ef476f;
+    font-size: 2rem;
+    margin-top: 30px;
+  }
+
+  .filter-buttons {
+    text-align: center;
+    margin: 30px 0 10px;
+  }
+
+  .filter-buttons button {
+    background-color: #06d6a0;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .filter-buttons button:hover {
+    background-color: #118ab2;
+  }
+
+  .kpi-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .kpi-card {
+    background: #fff8e1;
+    border: 2px solid #ffd166;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .kpi-card h4 {
+    color: #ef476f;
+    margin-bottom: 10px;
+  }
+
+  .kpi-card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #06d6a0;
+  }
+
+  .dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .chart-card {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    background: #fffaf0;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .chart-card h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .chart-card canvas {
+    width: 100%;
+    max-height: 400px;
+  }
+</style>
+{% endblock %}

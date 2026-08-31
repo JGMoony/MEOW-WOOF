@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.admin-create-btn-container {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.admin-create-btn {
+    background: linear-gradient(135deg, #118ab2, #06d6a0);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: inline-block;
+}
+
+.admin-create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #06d6a0, #118ab2);
+}
+</style>
+
+<h1>Catálogo de productos</h1>
+
+<div class="carousel-container">
+  <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+
+  <div class="carousel">
+    {% for product in featured_products %}
+    <div class="carousel-item">
+      <h3>
+        {% if forloop.counter <= 5 %}🔥 Más comprado{% else %}⭐ Mejor calificado{% endif %}
+      </h3>
+      <a href="{% url 'product_detail' product.id %}">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% endif %}
+        <h4>{{ product.name }}</h4>
+      </a>
+      <p>${{ product.price|floatformat:0|cut:"," }}</p>
+      <p>⭐ {{ product.average_rating }}</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+</div>
+
+<div style="margin-bottom:30px; text-align:center;">
+  <a href="{% url 'product_list' %}" 
+    style="background:#ff6f61; color:#fff; padding:8px 16px; border-radius:20px; text-decoration:none; margin-right:10px;">
+    Todos
+  </a>
+  {% for cat in categories %}
+    <a href="{% url 'product_list' %}?category={{ cat.id }}" 
+      style="background:#ffd166; color:#333; padding:8px 16px; border-radius:20px; text-decoration:none; margin-right:10px;">
+      {{ cat.name }}
+    </a>
+  {% endfor %}
+</div>
+
+{% if user.is_authenticated and user.is_staff %}
+    <div style="text-align:right; margin-bottom:20px;">
+        <a href="{% url 'product_create' %}" 
+          style="background:#118ab2; color:white; padding:10px 20px; border-radius:20px; text-decoration:none; font-weight:bold;">
+            Crear nuevo producto
+        </a>
+    </div>
+{% endif %}
+
+<div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+  {% for product in products %}
+    {% include "products/product_card.html" %}
+  {% empty %}
+    <p style="text-align:center; font-size:1.2em; color:#999;">
+      No hay productos disponibles en esta categoría. 🐶🐱
+    </p>
+  {% endfor %}
+</div>
+
+{% endblock %}

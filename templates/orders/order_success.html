@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .confirmation-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fffaf0;
+        padding: 30px;
+        border: 2px solid #ffd166;
+        border-radius: 15px;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', sans-serif;
+        text-align: center;
+    }
+
+    .confirmation-container h2 {
+        color: #bc8b10ff;
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .confirmation-container p {
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .confirmation-container b {
+        color: #b28f11ff;
+    }
+
+    .confirmation-container h3 {
+        color: #d6b006ff;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+
+    .confirmation-container ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .confirmation-container li {
+        background: #fdfdfd;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-left: 5px solid #d6b306ff;
+        border-radius: 8px;
+        font-weight: bold;
+        color: #333;
+        text-align: left;
+    }
+
+    .confirmation-container .total {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #000000ff;
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .confirmation-container a {
+        display: inline-block;
+        background: #d69e06ff;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .confirmation-container a:hover {
+        background: #fdec33ff;
+        transform: scale(1.05);
+    }
+</style>
+
+<div class="confirmation-container">
+    <h2>Pedido confirmado</h2>
+
+    <p>Gracias por tu compra, {{ order.user.username }}!</p>
+    <p>Tu pedido <b>#{{ order.id }}</b> fue creado correctamente.</p>
+
+    <h3>Detalles:</h3>
+    <ul>
+        {% for it in order.items.all %}
+        <li>{{ it.product.name }} x {{ it.quantity }} = ${{ it.subtotal | floatformat:0|cut:","}}</li>
+        {% endfor %}
+    </ul>
+
+    <p class="total">Total: ${{ order.total_amount|floatformat:0|cut:"," }}</p>
+
+    <a href="{% url 'profile_view' %}">Ver mis pedidos</a>
+</div>
+{% endblock %}

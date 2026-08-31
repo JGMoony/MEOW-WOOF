@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión - Pet Shop</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #ffe5e0, #eaf6ff); 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .login-container { 
+            background-color: #fff; 
+            padding: 40px 30px; 
+            border-radius: 15px; 
+            border: 2px solid #FFD166;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
+            width: 380px; 
+            text-align: center; 
+            position: relative;
+        }
+        .login-container h1 { 
+            color: #333; 
+            margin-bottom: 25px; 
+            font-size: 28px; 
+            animation: fadeBounce 1.2s ease-out;
+        }
+
+        /* Reutilizamos animación */
+        @keyframes fadeBounce {
+            0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            60% { opacity: 1; transform: translateY(5px) scale(1.05); }
+            80% { transform: translateY(-2px) scale(0.98); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .dog {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px auto;
+        }
+        .dog-head {
+            width: 100%;
+            height: 100%;
+            background: #FFE8C7;
+            border-radius: 50%;
+            position: relative;
+        }
+        .ear {
+            width: 40px;
+            height: 60px;
+            background: #8B5E3C;
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+        }
+        .ear.left { left: -15px; }
+        .ear.right { right: -15px; }
+        .eye {
+            width: 18px;
+            height: 24px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 35px;
+        }
+        .eye.left { left: 30px; }
+        .eye.right { right: 30px; }
+        .spot {
+            width: 32px;
+            height: 32px;
+            background: #D98C4C;
+            border-radius: 50%;
+            position: absolute;
+            right: 20px;
+            top: 25px;
+        }
+        .nose {
+            width: 20px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .mouth {
+            width: 40px;
+            height: 20px;
+            border-bottom: 4px solid #333;
+            border-radius: 0 0 40px 40px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tongue {
+            width: 18px;
+            height: 28px;
+            background: #FF4C7A;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: tongueMove 1.2s infinite ease-in-out;
+        }
+        @keyframes tongueMove {
+            0% { height: 0; }
+            50% { height: 28px; }
+            100% { height: 0; }
+        }
+        .tail {
+            width: 20px;
+            height: 60px;
+            background: #8B5E3C;
+            border-radius: 50%;
+            position: absolute;
+            right: -30px;
+            top: 30px;
+            transform-origin: top center;
+            animation: wag 0.6s infinite ease-in-out;
+        }
+        @keyframes wag {
+            0% { transform: rotate(20deg); }
+            50% { transform: rotate(-20deg); }
+            100% { transform: rotate(20deg); }
+        }
+
+        form { display: flex; flex-direction: column; gap: 15px; text-align: left; }
+        .form-group { display: flex; flex-direction: column; }
+        label { margin-bottom: 5px; font-weight: 600; color: #333; }
+        input[type="text"], input[type="password"] { 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            font-size: 16px; 
+            transition: all 0.3s ease; 
+            background: #fffaf0; 
+        }
+        input:focus { 
+            border-color: #06D6A0; 
+            outline: none; 
+            box-shadow: 0 0 6px rgba(0, 212, 161, 0.4); 
+        }
+        button { 
+            padding: 12px; 
+            border: none; 
+            border-radius: 10px; 
+            background: linear-gradient(90deg, #00e0a1, #00a8f5);
+            color: #fff; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: transform 0.2s; 
+        }
+        button:hover { transform: scale(1.05); }
+        p { margin-top: 20px; font-size: 14px; color: #555; }
+        a { color: #f44; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+
+        ul.messages { list-style: none; margin-bottom: 15px; padding: 0; }
+        ul.messages li { background-color: #FFEBE8; color: #D8000C; padding: 10px; border-radius: 6px; font-size: 14px; }
+        .error-message { color: #D8000C; font-size: 13px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="dog">
+            <div class="dog-head">
+                <div class="ear left"></div>
+                <div class="ear right"></div>
+                <div class="spot"></div>
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="nose"></div>
+                <div class="mouth"></div>
+                <div class="tongue"></div>
+            </div>
+            <div class="tail"></div>
+        </div>
+
+        <h1>Iniciar sesión</h1>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Usuario:</label>
+                <input type="text" name="username" id="id_username" placeholder="Ingresa tu usuario" required>
+                {% if form.errors.username %}
+                    <div class="error-message">{{ form.errors.username.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_password">Contraseña:</label>
+                <input type="password" name="password" id="id_password" placeholder="Ingresa tu contraseña" required>
+                {% if form.errors.password %}
+                    <div class="error-message">{{ form.errors.password.as_text }}</div>
+                {% endif %}
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+
+        <p>¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a></p>
+    </div>
+</body>
+</html>

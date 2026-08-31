@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <style>
+    .product-form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fffaf0;
+        padding: 30px;
+        border: 2px solid #ffd166;
+        border-radius: 20px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.08);
+        font-family: 'OV Treasure', serif;
+    }
+
+    .product-form-container h1 {
+        text-align: center;
+        color: #ef476f;
+        margin-bottom: 30px;
+        font-size: 2rem;
+    }
+
+    .product-form-container label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .product-form-container input[type="text"],
+    .product-form-container input[type="number"],
+    .product-form-container textarea,
+    .product-form-container select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+        background: #fdfdfd;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .product-form-container input[type="file"] {
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .form-buttons {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .form-buttons button {
+        background: #06d6a0;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        margin-right: 10px;
+    }
+
+    .form-buttons button:hover {
+        background: #118ab2;
+    }
+
+    .cancel-btn {
+        background: #ef476f;
+        color: white;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .cancel-btn:hover {
+        background: #d43f5e;
+    }
+
+    .form-errors {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+
+<div class="product-form-container">
+<h1>{% if product %}Editar Producto{% else %} Crear Producto{% endif %}</h1>
+
+{% if form.errors %}
+<div class="form-errors">
+    <strong>⚠️ Por favor corrige los siguientes errores:</strong>
+    <ul>
+    {% for field in form %}
+        {% for error in field.errors %}
+        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="id_name">Nombre:</label>
+    <input type="text" name="name" id="id_name" value="{{ form.name.value|default_if_none:'' }}" required>
+
+    <label for="id_description">Descripción:</label>
+    <textarea name="description" id="id_description" rows="3" required>{{ form.description.value|default_if_none:'' }}</textarea>
+
+    <label for="id_price">Precio:</label>
+    <input type="number" name="price" id="id_price" value="{{ form.price.value|default_if_none:'' }}" required min="0.01" step="0.01">
+
+    <label for="id_stock">Stock:</label>
+    <input type="number" name="stock" id="id_stock" value="{{ form.stock.value|default_if_none:'' }}" required min="0">
+
+    <label for="id_category">Categoría:</label>
+    {{ form.category }}
+
+    <label for="id_image">Imagen:</label>
+    {{ form.image }}
+
+    <div class="form-buttons">
+    <button type="submit">Guardar</button>
+    <a href="{% url 'product_list' %}" class="cancel-btn">Cancelar</a>
+    </div>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .btn-eliminar {
+        background-color: #ef476f;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 10px rgba(239, 71, 111, 0.3);
+        margin-right: 10px;
+    }
+
+    .btn-eliminar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 14px rgba(239, 71, 111, 0.4);
+    }
+
+    .btn-cancelar {
+        background-color: #06d6a0;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        display: inline-block;
+    }
+
+    .btn-cancelar:hover {
+        background-color: #118ab2;
+        transform: scale(1.05);
+    }
+
+    .botones-confirmacion {
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+<div style="border:2px solid #ffd166; border-radius:15px; padding:20px; max-width:700px; margin:0 auto; background:#fffaf0; box-shadow:2px 2px 6px rgba(0,0,0,0.1);">
+
+    {% if product.image %}
+        <div style="text-align:center; margin-bottom:20px;">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:300px; height:auto; border-radius:10px;">
+        </div>
+    {% endif %}
+
+<h2 style="color:#ff6f61; text-align:center; margin-bottom:20px;">{{ product.name }}</h2>
+
+<p><strong>Descripción:</strong> {{ product.description }}</p>
+<p style="color:#4caf50; font-weight:bold;">💲 Precio: ${{ product.price|floatformat:0|cut:"," }}</p>
+<p>Stock: {{ product.stock }}</p>
+<p>Calificación: {{ product.average_rating }} ({{ product.total_reviews }} reseñas)</p>
+
+<hr style="margin:30px 0;">
+
+    <div style="background:#fffaf0; padding:20px; border:2px dashed #ef476f; border-radius:15px; text-align:center;">
+        <h3 style="color:#ef476f; margin-bottom:15px;">¿Eliminar producto?</h3>
+        <p style="font-size:18px; margin-bottom:20px;">
+        ¿Estás segura de que deseas eliminar <strong style="color:#ff6f61;">{{ product.name }}</strong>? 🐶🐱
+        </p>
+
+    <div class="botones-confirmacion">
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-eliminar">Sí, eliminar</button>
+    </form>
+    <a href="{% url 'product_detail' product.pk %}" class="btn-cancelar">Cancelar</a>
+    </div>
+
+    <div style="text-align:center; margin-top:30px;">
+        <a href="{% url 'product_list' %}"
+        style="background:#118ab2; color:white; padding:8px 16px; border-radius:20px; text-decoration:none;">
+        Volver al catálogo
+        </a>
+    </div>
+</div>
+{% endblock %}

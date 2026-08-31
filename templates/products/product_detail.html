@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .carrito {
+    background-color: #f7fbc2ff;
+    border-radius: 100px;
+    box-shadow: rgba(187, 187, 44, 0.2) 0 -25px 18px -14px inset,rgba(187, 175, 44, 0.15) 0 1px 2px,rgba(187, 185, 44, 0.15) 0 2px 4px,rgba(187, 185, 44, 0.15) 0 4px 8px,rgba(187, 185, 44, 0.15) 0 8px 16px,rgba(187, 185, 44, 0.15) 0 16px 32px;
+    color: black;
+    cursor: pointer;
+    display: inline-block;
+    font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    }
+
+  .carrito:hover {
+    box-shadow: rgba(187, 163, 44, 0.35) 0 -25px 18px -14px inset,rgba(187, 182, 44, 0.25) 0 1px 2px,rgba(187, 177, 44, 0.25) 0 2px 4px,rgba(187, 163, 44, 0.25) 0 4px 8px,rgba(187, 158, 44, 0.25) 0 8px 16px,rgba(187, 177, 44, 0.25) 0 16px 32px;
+    transform: scale(1.05) rotate(-1deg);
+    }
+  .reviews-section {
+    margin-top: 30px;
+}
+  .review-card {
+    background: #fff8e1;
+    border-left: 5px solid #06d6a0;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+
+  .review-card strong {
+    color: #118ab2;
+    font-size: 1.1rem;
+  }
+
+  .review-rating {
+    color: #ffd166;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+
+  .review-comment {
+    margin-top: 8px;
+    font-style: italic;
+    color: #333;
+  }
+
+  .review-actions {
+    margin-top: 10px;
+    font-size: 0.9rem;
+  }
+
+  .review-actions a {
+    color: #ef476f;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+
+  .review-actions a:hover {
+    text-decoration: underline;
+  }
+
+  .review-form {
+    background: #fdfdfd;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #ffd166;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    margin-top: 20px;
+  }
+
+  .review-form h3 {
+    color: #06d6a0;
+    margin-bottom: 15px;
+  }
+
+  .review-form button {
+    background: #06d6a0;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .review-form button:hover {
+    background: #118ab2;
+  }
+  .rating-stars {
+    margin-bottom: 20px;
+  }
+
+  .stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+  }
+
+  .stars input[type="radio"] {
+    display: none;
+  }
+
+  .stars label {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .stars input:checked ~ label,
+  .stars label:hover,
+  .stars label:hover ~ label {
+    color: #ffd166;
+  }
+
+  textarea[name="comment"] {
+  width: 90%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  background: #fffaf0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+  .enviar-comment {
+    border: 0 solid;
+    background-color: rgba(78, 176, 246, 0.87);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0);
+    outline: 1px solid;
+    outline-color: rgba(255, 255, 255, 0);
+    outline-offset: 0px;
+    text-shadow: none;
+    -webkit-transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+            transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+    outline-color: rgba(255, 255, 255, 0.5);
+    outline-offset: 0px;
+  }
+
+  .enviar-comment:hover {
+    border: 1px solid;
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+    outline-offset: 15px;
+    outline-color: rgba(255, 255, 255, 0);
+    text-shadow: 1px 1px 2px #427388;
+  }
+</style>
+
+<div style="border:2px solid #ffd166; border-radius:15px; padding:20px; max-width:700px; margin:0 auto; background:#fffaf0; box-shadow:2px 2px 6px rgba(0,0,0,0.1);">
+
+  {% if product.image %}
+    <div style="text-align:center; margin-bottom:20px;">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+          style="width:300px; height:auto; border-radius:10px;">
+    </div>
+  {% endif %}
+
+  <h2 style="color:#ff6f61; text-align:center; margin-bottom:20px;">{{ product.name }}</h2>
+
+  <p><strong>Descripción:</strong> {{ product.description }}</p>
+  <p style="color:#4caf50; font-weight:bold;">💲 Precio: ${{ product.price|floatformat:0|cut:"," }}</p>
+  <p>Stock: {{ product.stock }}</p>
+  <p>Calificación: {{ product.average_rating }} ({{ product.total_reviews }} reseñas)</p>
+
+  {% if user.is_authenticated %}
+    <form method="POST" action="{% url 'cart_add' product.id %}">
+      {% csrf_token %}
+      <button class="carrito" type="submit">Añadir al carrito</button>
+    </form>
+  {% else %}
+    <a href="{% url 'login' %}?next={{ request.path }}">
+      <button class="carrito">Añadir al carrito</button>
+    </a>
+  {% endif %}
+
+  <hr style="margin:20px 0;">
+<div class="reviews-section">
+  <h3 style="color:#06d6a0;">🐾 Reseñas</h3>
+
+  {% for review in reviews %}
+    <div class="review-card">
+      <p><strong>{{ review.user.username }}</strong><span class="review-rating">{{ review.rating }}⭐</span></p>
+      <p class="review-comment">{{ review.comment }}</p>
+  {% if user.is_authenticated and user.is_staff %}
+    <div class="review-actions">
+      <a href="{% url 'review_delete' review.id %}">Eliminar</a>
+    </div>
+  {% elif review.user == user %}
+    <div class="review-actions">
+      <a href="{% url 'review_edit' review.id %}">Editar</a>
+      <a href="{% url 'review_delete' review.id %}">Eliminar</a>
+    </div>
+  {% endif %}
+    </div>
+  {% empty %}
+    <p>No hay reseñas todavía.</p>
+  {% endfor %}
+
+{% if user.is_authenticated and not user.is_staff %}
+  <div class="review-form">
+    <h3>Deja tu reseña</h3>
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="rating-stars">
+        <label>Calificación:</label>
+        <div class="stars">
+          {% for i in "12345" %}
+            <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}">
+            <label for="star{{ i }}">★</label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <label for="comment">Comentario:</label>
+      <textarea name="comment" id="comment" rows="4" placeholder="Escribe tu opinión..."></textarea>
+      <br>
+      <button class="enviar-comment" type="submit">Enviar</button>
+    </form>
+  </div>
+{% elif user.is_staff %}
+  <p style="color:#888;">🔒 Los administradores no pueden registrar reseñas.</p>
+{% else %}
+  <p><a href="{% url 'login' %}">Inicia sesión</a> para dejar una reseña.</p>
+{% endif %}
+</div>
+
+  <hr style="margin:20px 0;">
+
+  <div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'product_list' %}" 
+      style="background:#118ab2; color:white; padding:8px 16px; border-radius:20px; text-decoration:none; margin-right:10px;">
+      Volver al catálogo
+    </a>
+
+    {% if user.is_authenticated and user.is_staff %}
+      <a href="{% url 'product_update' product.id %}" 
+        style="background:#ffd166; color:#333; padding:8px 16px; border-radius:20px; text-decoration:none; margin-right:10px;">
+        Editar
+      </a>
+      <form method="POST" action="{% url 'product_delete' product.id %}" style="display:inline;">
+        {% csrf_token %}
+      <a href="{% url 'product_delete' product.id %}" 
+        style="background:#ef476f; color:white; padding:8px 16px; border-radius:20px; text-decoration:none;">
+        Eliminar
+      </a>
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

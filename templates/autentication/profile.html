@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    body {
+        font-family: "OV Treasure", serif;
+        background-color: #fffaf0;
+        color: #333;
+    }
+
+    .profile-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 30px;
+    }
+
+    .welcome-title {
+        text-align: center;
+        color: #b3841fff;
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        border: 2px solid #ffd166;
+        border-radius: 15px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+        background-color: #fffaf0;
+        margin-bottom: 30px;
+    }
+
+    .card-body p {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .card-body strong {
+        color: #b29c0cff;
+    }
+
+    .btn-profile {
+        border-radius: 20px;
+        font-weight: bold;
+        font-family: "OV Treasure", serif;
+        padding: 6px 16px;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #d6b306ff;
+        color: white;
+        border-color: #d6c106ff;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #ffd166;
+        color: #333;
+        border-color: #ffd166;
+    }
+
+    .card-header {
+        background-color: #d6a506ff;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        font-family: "OV Treasure", serif;
+    }
+
+    .table {
+        margin-top: 10px;
+        border-radius: 10px;
+        overflow: hidden;
+        font-family: "OV Treasure", serif;
+    }
+
+    .table th {
+        background-color: #f0f0f0;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .table td:nth-child(4)::before {
+        content: "$";
+        margin-right: 2px;
+        color: #020f0cff;
+        font-weight: bold;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #fff8e1;
+    }
+
+    .btn-outline-info {
+        border-radius: 15px;
+        font-weight: bold;
+        font-family: "OV Treasure", serif;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #118ab2;
+        color: white;
+        border-color: #118ab2;
+    }
+
+    .alert-info {
+        background-color: #fff8e1;
+        color: #333;
+        border: 1px solid #ffd166;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        font-family: "OV Treasure", serif;
+    }
+
+    .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+        text-align: center;
+        font-family: "OV Treasure", serif;
+    }
+
+    .button-8 {
+        background-color: #f1f4e1ff;
+        border-radius: 3px;
+        border: 1px solid #c7af7aff;
+        box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+        box-sizing: border-box;
+        color: #7b7a24ff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: -apple-system,system-ui,"OV Treasure", serif;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.15385;
+        margin: 0;
+        outline: none;
+        padding: 8px .8em;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: baseline;
+        white-space: nowrap;
+        }
+
+        .button-8:hover,
+        .button-8:focus {
+        background-color: #e9eab3ff;
+        color: #6c772cff;
+        }
+
+        .button-8:focus {
+        box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+        }
+
+        .button-8:active {
+        background-color: #e4daa0ff;
+        box-shadow: none;
+        color: #73772cff;
+        }
+</style>
+
+    <div class="profile-container">
+    <h2 class="welcome-title">Bienvenido, {{ request.user.first_name }}</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="success-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+            <p><strong>Nombre:</strong> {{ request.user.get_full_name }}</p>
+            <p><strong>Email:</strong> {{ request.user.email }}</p>
+            <p><strong>Usuario:</strong> {{ request.user.username }}</p>
+            <br>
+            <a href="{% url 'profile_edit' %}" class="button-8">Editar perfil</a>
+            <a href="{% url 'password_change' %}" class="button-8">Cambiar contraseña</a>
+            <br>
+            <br>
+            </div>
+        </div>
+        </div>
+
+        <div class="card">
+        <div class="card-header">Historial de pedidos</div>
+        <div class="card-body">
+            {% if orders %}
+            <div style="overflow-x:auto;">
+                <table class="table table-bordered table-hover" style="width:100%;">
+                <thead>
+                    <tr>
+                    <th>Imagen</th>
+                    <th>Producto</th>
+                    <th>Total</th>
+                    <th>Método de pago</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                    <td>
+                        {% for item in order.items.all %}
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:50px; height:50px; object-fit:cover; border-radius:8px; margin:2px;">
+                        {% else %}
+                            <img src="https://place-puppy.com/50x50" alt="Producto" style="width:50px; height:50px; object-fit:cover; border-radius:8px; margin:2px;">
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in order.items.all %}
+                        {{ item.product.name }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>{{ order.total_amount|floatformat:0|cut:"," }}</td>
+                    <td>{{ order.metodo_pago }}</td>
+                    <td>{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'order_success' order.id %}" class="button-8">Ver detalle</a>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">No tienes pedidos registrados aún.</div>
+            {% endif %}
+        </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

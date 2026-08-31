@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .checkout-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff8e1;
+        padding: 30px;
+        border: 2px solid #ffd166;
+        border-radius: 15px;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .checkout-container h2 {
+        text-align: center;
+        color: #bc8b10ff;
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
+
+    .checkout-container ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .checkout-container li {
+        background: #fdfdfd;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-left: 5px solid #d6b306ff;
+        border-radius: 8px;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .checkout-container p {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 8px;
+        color: #333333;
+    }
+
+    .checkout-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .checkout-container label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .checkout-container input,
+    .checkout-container select {
+        width: 93%;
+        padding: 12px 16px;
+        border: 2px solid #ffd166;
+        border-radius: 12px;
+        background-color: #fffaf0;
+        font-size: 16px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .checkout-container input:focus,
+    .checkout-container select:focus {
+        border-color: #d6b306ff;
+        box-shadow: 0 0 5px rgba(6, 214, 160, 0.5);
+        outline: none;
+    }
+
+    .checkout-container button {
+        background: #d69e06ff;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .checkout-container button:hover {
+        background: #fdec33ff;
+    }
+
+    .btn-ctn, h2 { 
+        font-family: "OV Treasure", serif;
+    }
+</style>
+
+    <div class="checkout-container">
+    <h2>Checkout</h2>
+
+    <ul>
+        {% for it in items %}
+        <li>{{ it.product.name }} x {{ it.quantity }} = ${{ it.subtotal |floatformat:0|cut:","}}</li>
+        {% endfor %}
+    </ul>
+
+    <p>Subtotal: ${{ subtotal | floatformat:0|cut:","}} | IVA: ${{ iva | floatformat:0|cut:","}} | Envío: ${{ envio | floatformat:0|cut:","}} | <b>Total: ${{ total | floatformat:0|cut:","}}</b></p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+        {{ form.nombre }}
+
+        <label for="{{ form.apellido.id_for_label }}">Apellido:</label>
+        {{ form.apellido }}
+
+        <label for="{{ form.dirección.id_for_label }}">Dirección:</label>
+        {{ form.dirección }}
+
+        <label for="{{ form.ciudad.id_for_label }}">Ciudad:</label>
+        {{ form.ciudad }}
+
+        <label for="{{ form.telefono.id_for_label }}">Teléfono:</label>
+        {{ form.telefono }}
+
+        <label for="{{ form.metodo_pago.id_for_label }}">Método de pago:</label>
+        {{ form.metodo_pago }}
+
+        <button class="btn-ctn" type="submit">Continuar</button>
+    </form>
+    </div>
+</div>
+
+{% endblock %}

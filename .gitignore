@@ -1,0 +1,55 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+venv/
+.env/
+.venv/
+env/
+
+# Archivos de configuración local
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de Django
+db.sqlite3
+media/
+staticfiles/
+*.mo
+
+# Migraciones compiladas (opcional, puedes decidir subirlas si trabajas en equipo)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+# Si NO quieres subir las migraciones, descomenta esta línea:
+# */migrations/
+
+# Archivos de coverage / testing
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+htmlcov/
+
+# Archivos de distribución / build
+build/
+dist/
+*.egg-info/
+.eggs/
